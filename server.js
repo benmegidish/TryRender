@@ -8,7 +8,7 @@ const server =http.createServer(app);
 
 const io=new Server(server,{
     cors:{
-        origin:"http://https://socketio-trial.netlify.app/",
+        origin:"https://socketio-trial.netlify.app/",
         methods:["GET","POST"]
     }      
 })
