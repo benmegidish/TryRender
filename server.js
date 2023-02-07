@@ -1,15 +1,36 @@
-const express=require('express');
-const cors=require('cors');
-
-const app =express();
-const router=require('./routers/router');
+const express = require('express');
+const cors= require('cors');
+const http= require('http')
+const {Server}=require('socket.io')
+const app=express();
 app.use(cors());
-app.use(express.json());
-app.use('/api/router',router);
-app.use('/',(req,res)=>{
-    res.send("Hello first time using railways");
+const server =http.createServer(app);
+
+const io=new Server(server,{
+    cors:{
+        origin:"http://https://socketio-trial.netlify.app/",
+        methods:["GET","POST"]
+    }      
 })
-const port=4000;
-app.listen(port,()=>{
-    console.log(`Server is Runung on port ${port}`);
+
+io.on("connection",(socket)=>{
+    console.log(`User Connected:  ${socket.id}`);
+
+    socket.on("disconnect",()=>{
+        console.log("User Disconnected ",socket.id);
+    });
+    
+    socket.on("send_message",(data)=>{
+        console.log(`user: ${data.author} sent a message at: ${data.time}`);
+        socket.to(data.id).emit('recieve_message',data);
+    })
+
+    socket.on("join_room",(data)=>{
+        socket.join(data);
+        console.log(`User: ${socket.id} joined Room: ${data}`);
+    })
+})
+
+server.listen(4000,()=>{
+    console.log('Server is running...');
 })
