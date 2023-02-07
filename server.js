@@ -6,12 +6,7 @@ const app=express();
 app.use(cors());
 const server =http.createServer(app);
 
-const io=new Server(server,{
-    cors:{
-        origin:"https://second-socketio-trial.netlify.app/",
-        methods:["GET","POST"]
-    }      
-})
+const io=new Server(server)
 app.use('/',(req,res)=>{
     res.send("connecting to socket...")
 })
